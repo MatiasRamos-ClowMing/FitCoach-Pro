@@ -18,9 +18,9 @@ const AuthProvider = ({ children }) => {
   const login = (credentials) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const allUsers = getUsers(); // Obtener usuarios usando la función exportada
+        const allUsers = getUsers();
         const user = allUsers.find(
-          u => u.email === credentials.email && u.password === credentials.password
+          u => u.email === credentials.email && u.password === credentials.password && u.verified
         );
         
         if (user) {
@@ -30,7 +30,7 @@ const AuthProvider = ({ children }) => {
           setCurrentUser(userData);
           resolve(userData);
         } else {
-          reject(new Error('Credenciales incorrectas'));
+          reject(new Error('Credenciales incorrectas o cuenta no verificada'));
         }
       }, 500);
     });

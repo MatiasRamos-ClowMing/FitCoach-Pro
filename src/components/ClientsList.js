@@ -4,10 +4,14 @@ import clientPhotos from '../mock/clientPhotos';
 import ClientCard from './ClientCard';
 import PhotoProgressTimeline from './PhotoProgressTimeline';
 import ClientFullProfile from './ClientFullProfile';
+import ClientEditForm from './ClientEditForm';
+import { addClient } from '../mock/clients'; // Importar función para agregar cliente
 
 const ClientsList = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [selectedClient, setSelectedClient] = useState(null);
+  const [editingClient, setEditingClient] = useState(null);
+  const [showAddClientForm, setShowAddClientForm] = useState(false); // Estado para mostrar formulario de agregar
 
   const filteredClients = activeTab === 'all' 
     ? clients 
@@ -17,10 +21,56 @@ const ClientsList = () => {
     ? clientPhotos.filter(photo => photo.clientId === selectedClient.id)
     : [];
 
+  const handleSaveClient = (updatedClient) => {
+    const index = clients.findIndex(c => c.id === updatedClient.id);
+    if (index !== -1) {
+      clients[index] = updatedClient;
+      setSelectedClient(updatedClient);
+      setEditingClient(null);
+      console.log("Cliente actualizado (simulado):", updatedClient);
+      window.location.reload(); 
+    }
+  };
+
+  const handleAddClient = (newClientData) => {
+    const newClient = addClient(newClientData); // Usar la función del mock
+    console.log("Nuevo cliente agregado (simulado):", newClient);
+    setShowAddClientForm(false); // Ocultar formulario
+    window.location.reload(); // Recargar para ver el nuevo cliente
+  };
+
   return (
     <div className="p-6 bg-gray-900 text-white">
-      {selectedClient ? (
-        <ClientFullProfile client={selectedClient} />
+      {editingClient ? (
+        <ClientEditForm 
+          client={editingClient} 
+          onSave={handleSaveClient} 
+          onCancel={() => setEditingClient(null)} 
+        />
+      ) : showAddClientForm ? ( // Mostrar formulario de agregar cliente
+        <ClientEditForm 
+          client={{}} // Pasar un objeto vacío para un nuevo cliente
+          onSave={handleAddClient} 
+          onCancel={() => setShowAddClientForm(false)} 
+        />
+      ) : selectedClient ? (
+        <>
+          <ClientFullProfile client={selectedClient} />
+          <div className="mt-6 text-center">
+            <button 
+              onClick={() => setEditingClient(selectedClient)}
+              className="px-6 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition-colors mr-4"
+            >
+              Editar Cliente
+            </button>
+             <button 
+              onClick={() => setSelectedClient(null)}
+              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Volver a la Lista
+            </button>
+          </div>
+        </>
       ) : (
         <>
           <div className="flex space-x-4 mb-6 overflow-x-auto pb-2">
@@ -41,6 +91,12 @@ const ClientsList = () => {
               className={`px-4 py-2 rounded-lg whitespace-nowrap ${activeTab === 'grasa' ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'}`}
             >
               Perder Grasa
+            </button>
+            <button 
+              onClick={() => setShowAddClientForm(true)} // Botón para agregar cliente
+              className="px-4 py-2 rounded-lg whitespace-nowrap bg-green-500 text-black hover:bg-green-600 transition-colors"
+            >
+              Agregar Cliente
             </button>
           </div>
           

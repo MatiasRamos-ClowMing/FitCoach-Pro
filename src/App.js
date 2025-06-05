@@ -13,13 +13,16 @@ import SpecialDaysCalendar from './components/SpecialDaysCalendar';
 import ReviewsSection from './components/ReviewsSection';
 import ProgressSection from './components/ProgressSection';
 import WhatsAppChat from './components/WhatsAppChat';
-import StepCounter from './components/StepCounter'; // Importar StepCounter
-import WorkoutTimer from './components/WorkoutTimer'; // Importar WorkoutTimer
+import UserManagement from './components/UserManagement';
+import StepCounter from './components/StepCounter';
+import WorkoutTimer from './components/WorkoutTimer';
+import CalorieCalculator from './components/CalorieCalculator'; // Importar CalorieCalculator
 import { useContext } from 'react';
 
 const AppContent = () => {
   const [currentView, setCurrentView] = useState('clients');
-  const [isChatVisible, setIsChatVisible] = useState(true); // Estado para controlar la visibilidad del chat
+  const [isChatVisible, setIsChatVisible] = useState(false);
+  const { currentUser } = useContext(AuthContext);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -80,11 +83,25 @@ const AppContent = () => {
           Progreso
         </button>
          <button 
-          onClick={() => setCurrentView('trackers')} // Nuevo botón para los trackers
+          onClick={() => setCurrentView('trackers')}
           className={`px-4 py-2 rounded-lg whitespace-nowrap ${currentView === 'trackers' ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'}`}
         >
           Trackers
         </button>
+         <button 
+          onClick={() => setCurrentView('tools')} // Nuevo botón para herramientas
+          className={`px-4 py-2 rounded-lg whitespace-nowrap ${currentView === 'tools' ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'}`}
+        >
+          Herramientas
+        </button>
+         {currentUser?.role === 'admin' && (
+           <button 
+            onClick={() => setCurrentView('userManagement')}
+            className={`px-4 py-2 rounded-lg whitespace-nowrap ${currentView === 'userManagement' ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'}`}
+          >
+            Gestión Usuarios
+          </button>
+         )}
          <button 
           onClick={() => setIsChatVisible(!isChatVisible)}
           className={`px-4 py-2 rounded-lg whitespace-nowrap ${isChatVisible ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}
@@ -102,14 +119,20 @@ const AppContent = () => {
       {currentView === 'specialDays' && <SpecialDaysCalendar />}
       {currentView === 'reviews' && <ReviewsSection />}
       {currentView === 'progress' && <ProgressSection />}
-      {currentView === 'trackers' && ( // Renderizar los trackers en una nueva sección
+      {currentView === 'trackers' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
           <StepCounter />
           <WorkoutTimer />
         </div>
       )}
+      {currentView === 'tools' && ( // Renderizar la calculadora de calorías
+        <div className="p-6">
+          <CalorieCalculator />
+        </div>
+      )}
+      {currentView === 'userManagement' && currentUser?.role === 'admin' && <UserManagement />}
 
-      <WhatsAppChat isVisible={isChatVisible} />
+      <WhatsAppChat isVisible={isChatVisible} onClose={() => setIsChatVisible(false)} />
     </div>
   );
 };

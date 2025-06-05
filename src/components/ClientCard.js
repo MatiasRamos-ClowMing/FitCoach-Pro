@@ -5,7 +5,7 @@ const ClientCard = ({ client }) => {
     <div className="bg-gray-800 text-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
       <div className="flex items-center mb-4">
         <img 
-          src={client.profilePhoto} 
+          src={client.profilePhoto || 'https://via.placeholder.com/150?text=No+Foto'} // Mostrar foto o placeholder
           alt={client.name}
           className="w-16 h-16 rounded-full object-cover mr-4 border-2 border-yellow-400"
         />
@@ -20,7 +20,7 @@ const ClientCard = ({ client }) => {
       </div>
       <div className="w-full bg-gray-700 rounded-full h-2.5 mb-4">
         <div 
-          className="bg-yellow-400 h-2.5 rounded-full" 
+          className="bg-yellow-400 h-2.5 rounded-full transition-all duration-500" 
           style={{ width: `${client.progress}%` }}
         ></div>
       </div>
@@ -33,3 +33,5 @@ const ClientCard = ({ client }) => {
 };
 
 export default ClientCard;
+
+// DONE

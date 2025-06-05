@@ -3,9 +3,10 @@ let users = [
     id: 1,
     name: "Carlos Pérez",
     email: "cliente1@fitcoach.com",
-    password: "SecurePass123",
+    password: "123456",
     verified: true,
-    role: "client"
+    role: "client",
+    profilePhoto: "https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc0GFBYty218H2UmiVoIaLRWrsnGtKNMgQEykZY" // Foto actualizada
   },
   {
     id: 2,
@@ -13,9 +14,21 @@ let users = [
     email: "pelaezedilson83@gmail.com",
     password: "123456",
     verified: true,
-    role: "client" // O el rol que necesites
+    role: "admin",
+    profilePhoto: "https://via.placeholder.com/50?text=EP"
+  },
+   {
+    id: 3,
+    name: "Lorena Coach",
+    email: "lorenacoach.08@gmail.com",
+    password: "123456",
+    verified: true,
+    role: "trainer",
+    profilePhoto: "https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc0zlQxkqeYLtCPgmTbn59N6BRyWUl87afK30Dw"
   }
 ];
+
+import { addHistoryEntry } from './history';
 
 export const addUser = (newUser) => {
   const userExists = users.some(user => user.email === newUser.email);
@@ -26,8 +39,7 @@ export const addUser = (newUser) => {
   const user = {
     id: users.length + 1,
     ...newUser,
-    verified: false,
-    role: "client"
+    verified: true,
   };
   
   users.push(user);
@@ -40,8 +52,7 @@ export const verifyUser = (email, code) => {
     throw new Error('Usuario no encontrado');
   }
   
-  // Simular verificación (en realidad compararíamos con código enviado)
-  if (code === "123456") { // Código hardcodeado para demo
+  if (code === "123456") {
     user.verified = true;
     return true;
   }
